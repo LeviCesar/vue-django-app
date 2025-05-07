@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
 
 const authStore = useAuthStore()
-
 const logout = () => {
   authStore.logout()
 }
+
+const userStore = useUserStore()
+
 </script>
 
 <template>
@@ -24,7 +27,7 @@ const logout = () => {
     <!-- Conteúdo Principal -->
     <main class="flex-1 flex items-center justify-center">
       <div class="text-center">
-        <h2 class="text-3xl font-bold text-indigo-700 mb-2">Bem-vindo de volta!</h2>
+        <h2 class="text-3xl font-bold text-indigo-700 mb-2">Bem-vindo de volta {{ userStore.user.username }} !</h2>
         <p class="text-gray-600 text-lg">Você está logado no sistema.</p>
       </div>
     </main>

@@ -1,5 +1,5 @@
 [project]
-name = "django-api"
+name = "backend"
 version = "0.1.0"
 description = "project authentication with api django-rest-framework"
 authors = [
@@ -11,13 +11,17 @@ requires-python = ">=3.12"
 dependencies = [
     "django (==5.2)",
     "djangorestframework (>=3.16.0,<4.0.0)",
-    "djangorestframework-simplejwt (>=5.5.0,<6.0.0)"
+    "djangorestframework-simplejwt (>=5.5.0,<6.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)",
+    "django-cors-headers (>=4.7.0,<5.0.0)"
 ]
 
 [tool.poetry]
+package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+

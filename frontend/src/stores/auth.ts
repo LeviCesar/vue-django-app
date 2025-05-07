@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import axios, { AxiosInstance } from "axios";
 import router from "@/routes";
-import { format, toZonedTime } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 import { useNotificationStore } from "./notification";
 
@@ -26,7 +26,6 @@ export const useAuthStore = defineStore(
     // states
     const accessToken = ref<string>("");
     const refreshToken = ref<string>("");
-    const tokenType = ref<string>("");
 
     //getters
     const isAuthenticated = computed((): boolean => {
@@ -35,14 +34,14 @@ export const useAuthStore = defineStore(
       
       let contentObj = JSON.parse(atob(content[1]));
       let tokenExpiry = contentObj?.exp;
-
       if (!tokenExpiry) return false;
 
       const utcDate = new Date();
       const timeZone = 'America/Sao_Paulo';
 
-      const AmericaDate = toZonedTime(utcDate, timeZone);
-      return new Date(tokenExpiry).getTime() > new Date(format(AmericaDate, 'yyyy-MM-dd HH:mm:ssXXX', { timeZone })).getTime();
+      const zonedDate = toZonedTime(utcDate, timeZone);
+      const currentTimeInSeconds = Math.floor(zonedDate.getTime() / 1000);
+      return tokenExpiry > currentTimeInSeconds;
     });
 
     const getAccessToken = computed((): string => accessToken.value);
@@ -50,12 +49,11 @@ export const useAuthStore = defineStore(
     // actions
     function login(user: ILoginAuth): void {
       authSession
-        .post("/auth/token", user)
+        .post("/api/v1/token/", user)
         .then((response) => response.data)
         .then((data: ITokenData) => {
-          accessToken.value = data.accessToken;
-          refreshToken.value = data.refreshToken;
-          tokenType.value = data.tokenType;
+          accessToken.value = data.access;
+          refreshToken.value = data.refresh;
 
           useNotification.addNotification({
             text: "Login realizado com sucesso",
@@ -65,7 +63,6 @@ export const useAuthStore = defineStore(
           router.push("/home");
         })
         .catch((error) => {
-          // console.log(error);
           useNotification.addNotification({
             text: "Usuário ou senha incorreto(s)",
             type: TypeNotification.ERROR,
@@ -86,13 +83,13 @@ export const useAuthStore = defineStore(
     async function refreshSession(): Promise<boolean> {
       if (!refreshToken.value) return false;
 
-      let payload: IRefreshToken = { refreshToken: refreshToken.value };
+      let payload: IRefreshToken = { refresh: refreshToken.value };
 
       let status = await authSession
-        .post("/auth/refresh-token", payload)
+        .post("/api/v1/token/refresh/", payload)
         .then((response) => response.data)
         .then((data: ITokenData) => {
-          accessToken.value = data.accessToken;
+          accessToken.value = data.access;
 
           return true;
         })
@@ -121,7 +118,6 @@ export const useAuthStore = defineStore(
       // states
       accessToken,
       refreshToken,
-      tokenType,
 
       // getters
       isAuthenticated,

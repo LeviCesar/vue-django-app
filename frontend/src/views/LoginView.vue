@@ -7,7 +7,7 @@ import InputPasswordIcon from "@/components/inputs/InputPasswordIcon.vue"
 
 const authStore = useAuthStore();
 const auth = reactive<ILoginAuth>({
-  email: "",
+  username: "",
   password: "",
 });
 </script>
@@ -20,7 +20,7 @@ const auth = reactive<ILoginAuth>({
         class="w-96 grid gap-6 justify-items-center"
         @submit.prevent="authStore.login(auth)"
       >
-        <InputIcon icon="user" input-id="email" input-placeholder="johndue@email.com" v-model="auth.email" />
+        <InputIcon icon="user" input-id="email" input-placeholder="johndue@email.com" v-model="auth.username" />
         <InputPasswordIcon input-id="password" input-placeholder="************" v-model="auth.password" />
         <router-link to="#" class="text-indigo-600 text-center underline">
           Esqueceu sua senha?

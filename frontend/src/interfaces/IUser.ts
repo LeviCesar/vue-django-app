@@ -1,14 +1,12 @@
 export interface IUserForm {
-    name: string,
+    username: string,
     email: string,
-    document: string,
     password: string,
-    confirmPassword: string
 }
 
 export interface IUser {
-    name: string,
-    email: string,
-    document: string, 
+    id: number | null,
+    username: string | null,
+    email: string | null,
     registerDate: Date | null
 }

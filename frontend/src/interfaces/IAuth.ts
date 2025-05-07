@@ -1,18 +1,17 @@
 export interface ILoginAuth {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface IRefreshToken {
-  refreshToken: string;
+  refresh: string;
 }
 
 export interface IAccessToken {
-  accessToken: string;
+  access: string;
 }
 
 export interface ITokenData {
-  accessToken: string;
-  refreshToken: string;
-  tokenType: string;
+  access: string;
+  refresh: string;
 }

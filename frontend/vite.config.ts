@@ -14,4 +14,8 @@ export default defineConfig({
       { find: '@use', replacement: fileURLToPath(new URL('./src/shared/use', import.meta.url)) },
     ],
   },
+  server: {
+    port: 3000, // Set static port
+    host: true  // Optional: allows access via IP on LAN
+  },
 })

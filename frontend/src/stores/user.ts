@@ -1,6 +1,7 @@
 import { computed, onMounted, ref } from "vue";
 import { defineStore } from "pinia";
 import http from "@/http";
+import router from "@/routes";
 
 import { useNotificationStore } from "./notification";
 
@@ -15,31 +16,31 @@ export const useUserStore = defineStore(
 
     // states
     const user = ref<IUser>({
-      name: "",
-      document: "",
-      email: "",
-      registerDate: null,
+      id: null,
+      username: null,
+      email: null,
+      registerDate: null
     });
     const permissions = ref<Object>({});
 
     // getters
-    const getUser = computed((): IUser => user.value);
+    // const getUser = computed((): IUser => user.value);
     
-    const getUserForm = computed((): IUserForm => {
-      return {
-        name: getUser.value.name,
-        document: getUser.value.document,
-        email: getUser.value.email,
-        password: '',
-        confirmPassword: ''
-      }
-    });
+    // const getUserForm = computed((): IUserForm => {
+    //   return {
+    //     name: getUser.value.name,
+    //     document: getUser.value.document,
+    //     email: getUser.value.email,
+    //     password: '',
+    //     confirmPassword: ''
+    //   }
+    // });
 
     // actions
     function registerUser(newUser: IUserForm): void {
-      console.log(newUser)
+      console.log('forumalario ', newUser)
       http
-        .post("/account/v1/users/register", newUser)
+        .post("/api/v1/register/", newUser)
         .then((response) => response.data)
         .then((data) => {
           console.log(data);
@@ -47,6 +48,8 @@ export const useUserStore = defineStore(
             text: "Sucesso ao adicionar novo usuário",
             type: TypeNotification.SUCCESS,
           });
+
+          router.push("/login");
         })
         .catch((error) => {
           console.log(error);
@@ -54,52 +57,20 @@ export const useUserStore = defineStore(
     }
 
     function loadUser(): void {
-      if (!user.value.name || !user.value.email || !user.value.email) {
+      if (!user.value.id) {
         http
-          .get("/users/get")
+          .get("/api/v1/users/")
           .then((response) => response.data)
           .then((data) => {
-            user.value.name = data.user.name;
-            user.value.email = data.user.email;
-            user.value.document = data.user.document;
-            user.value.registerDate = data.user.registerDate;
+            if (data?.results[0].id) {
+              user.value.id = data.results[0]?.id;
+              user.value.username = data.results[0]?.username;
+              user.value.email = data.results[0]?.email;
+              user.value.registerDate = data.results[0]?.date_joined;
+            }
           })
           .catch((error) => {
             console.log(error);
-          });
-      }
-    }
-
-    function updateUser({
-      name,
-      document,
-      email,
-      password,
-      confirmPassword,
-    }: IUserForm): void {
-      if (user.value.name != name || user.value.document != document) {
-        let payload = {
-          name: name,
-          document: document,
-        };
-        http
-          .patch("/users/alter", payload)
-          .then((response) => {
-            notificationStore.addNotification({
-              text: "Nome e Documentos alterados com sucesso",
-              type: TypeNotification.SUCCESS,
-            });
-            return response.data;
-          })
-          .then((data) => {
-            user.value.name = data.name;
-            user.value.document = data.document;
-          })
-          .catch((error) => {
-            notificationStore.addNotification({
-              text: "Erro ao atualizar nome e documento do usuário!",
-              type: TypeNotification.ERROR,
-            });
           });
       }
     }
@@ -112,12 +83,12 @@ export const useUserStore = defineStore(
       permissions,
 
       // getters
-      getUser,
-      getUserForm,
+      // getUser,
+      // getUserForm,
 
       // actions
       registerUser,
-      updateUser,
+      // updateUser,
     };
   },
   {

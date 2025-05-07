@@ -23,7 +23,6 @@ const iconList = Object.keys(solidIcons)
 library.add(...iconList);
 
 app.component('font-awesome-icon', FontAwesomeIcon);
-app.directive('mask', mask);
 app.use(pinia);
 app.use(router);
 app.mount('#app');

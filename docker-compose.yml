@@ -1,8 +1,28 @@
-backend:
-  ...
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: django_app
+    command: >
+      sh -c "poetry run python manage.py migrate &&
+            poetry run python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+    env_file:
+      - ./backend/app/.env
 
-frontend:
-  
-
-db:
-  ...
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vue_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/frontend
+    command: npm run dev
+    working_dir: /frontend
+    environment:
+      - NODE_ENV=development

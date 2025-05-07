@@ -3,17 +3,14 @@ import { reactive } from "vue";
 import { IUserForm } from "@/interfaces/IUser";
 import { useUserStore } from "@/stores/user";
 
-import InputMaskIcon from "@/components/inputs/InputMaskIcon.vue";
 import InputPasswordIcon from "@/components/inputs/InputPasswordIcon.vue";
 import InputIcon from "@/components/inputs/InputIcon.vue";
 
 const userStore = useUserStore();
 const user = reactive<IUserForm>({
-  name: "",
+  username: "",
   email: "",
-  document: "",
-  password: "",
-  confirmPassword: "",
+  password: ""
 });
 </script>
 
@@ -42,11 +39,9 @@ const user = reactive<IUserForm>({
         class="w-2/5 grid gap-4 justify-items-center"
         @submit.prevent="userStore.registerUser(user)"
       >
-        <InputIcon icon="user" input-id="name" input-placeholder="Nome" v-model="user.name" />
+        <InputIcon icon="user" input-id="username" input-placeholder="Nome Usuário" v-model="user.username" />
         <InputIcon icon="envelope" input-id="email" input-placeholder="Email" input-type="email"  v-model="user.email"/>
-        <InputMaskIcon icon="passport" input-id="cpf" input-placeholder="CPF" mask="###.###.###-##" :is-masked="false" v-model="user.document" />
         <InputPasswordIcon input-id="password" input-placeholder="Senha" v-model="user.password"/>
-        <InputPasswordIcon input-id="confirm-password" input-placeholder="Confirmar Senha" v-model="user.confirmPassword"/>
         <button
           type="submit"
           class="w-52 p-2 rounded-full bg-gradient-to-tr from-indigo-600 to-teal-500 transition-all duration-500 ease-in-out transform hover:scale-105 text-white text-lg font-medium"

@@ -11,9 +11,9 @@ const httpClient: AxiosInstance = axios.create({
 
 // List of endpoints that do not require a token
 const noAuthEndpoints: string[] = [
-  '/auth/token', 
-  '/auth/refresh-token', 
-  '/account/v1/users/register'
+  '/api/v1/token', 
+  '/api/v1/token/refresh', 
+  '/api/v1/register'
 ];
 
 // Utility functions for token refreshing
@@ -33,15 +33,14 @@ httpClient.interceptors.request.use(
   async function (config: AxiosRequestConfig) {
     // Check if the request URL is in the list of no-auth endpoints
     const requiresAuth = !noAuthEndpoints.some(endpoint => config.url?.includes(endpoint));
-    
+
     if (requiresAuth) {
       const authStore = useAuthStore()
-      let tokenType = authStore.tokenType.charAt(0).toUpperCase() + authStore.tokenType.slice(1)
       
       if (authStore.getAccessToken) {
         config.headers = {
           ...config.headers,
-          Authorization: `${tokenType} ${authStore.getAccessToken}`,
+          Authorization: `Bearer ${authStore.getAccessToken}`,
         };
       } else {
         // Handle case where token is missing (e.g., redirect to login)
@@ -57,7 +56,7 @@ httpClient.interceptors.request.use(
               throw new Error('Authentication token is missing');
             }
 
-            config.headers.Authorization = `${tokenType} ${authStore.getAccessToken}`;
+            config.headers.Authorization = `Bearer ${authStore.getAccessToken}`;
 
             onRefreshed(authStore.getAccessToken);
           } catch (error) {
@@ -72,7 +71,7 @@ httpClient.interceptors.request.use(
           addSubscriber((newToken: string) => {
             config.headers = {
               ...config.headers,
-              Authorization: `${tokenType} ${newToken}`,
+              Authorization: `Bearer ${newToken}`,
             };
             resolve(config);
           });
