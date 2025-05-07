@@ -27,13 +27,14 @@ NOTE: This project has not yet been completed
 ---
 
 ## 📁 Project Structure
-
+```bash
 ├── backend/ # Django project
 │ └── app/ # Main Django app
 ├── frontend/ # Vue 3 + Vite + Tailwind app
 │ └── src/ # Components, views, store, routes
 ├── docker-compose.yml # Docker orchestration
 ├── README.md
+```
 
 ---
 
